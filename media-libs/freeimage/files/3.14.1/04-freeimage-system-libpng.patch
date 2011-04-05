@@ -1,0 +1,25 @@
+System libpng
+
+From: Azamat H. Hackimov <azamat.hackimov@gmail.com>
+
+
+---
+
+ Source/FreeImage/PluginPNG.cpp |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+
+diff --git a/Source/FreeImage/PluginPNG.cpp b/Source/FreeImage/PluginPNG.cpp
+index f788b4b..499ea37 100644
+--- a/Source/FreeImage/PluginPNG.cpp
++++ b/Source/FreeImage/PluginPNG.cpp
+@@ -37,7 +37,8 @@
+ 
+ // ----------------------------------------------------------
+ 
+-#include "../LibPNG/png.h"
++#define PNG_iTXt_SUPPORTED
++#include <png.h>
+ 
+ // ----------------------------------------------------------
+ 

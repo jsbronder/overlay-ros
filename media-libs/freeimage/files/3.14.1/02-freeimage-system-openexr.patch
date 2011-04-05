@@ -1,0 +1,40 @@
+System OpenEXR
+
+From: Azamat H. Hackimov <azamat.hackimov@gmail.com>
+
+
+---
+
+ Source/FreeImage/PluginEXR.cpp |   18 +++++++++---------
+ 1 files changed, 9 insertions(+), 9 deletions(-)
+
+
+diff --git a/Source/FreeImage/PluginEXR.cpp b/Source/FreeImage/PluginEXR.cpp
+index 6eff52a..17e2c11 100644
+--- a/Source/FreeImage/PluginEXR.cpp
++++ b/Source/FreeImage/PluginEXR.cpp
+@@ -22,15 +22,15 @@
+ 
+ #include "FreeImage.h"
+ #include "Utilities.h"
+-#include "../OpenEXR/IlmImf/ImfIO.h"
+-#include "../OpenEXR/Iex/Iex.h"
+-#include "../OpenEXR/IlmImf/ImfOutputFile.h"
+-#include "../OpenEXR/IlmImf/ImfInputFile.h"
+-#include "../OpenEXR/IlmImf/ImfRgbaFile.h"
+-#include "../OpenEXR/IlmImf/ImfChannelList.h"
+-#include "../OpenEXR/IlmImf/ImfRgba.h"
+-#include "../OpenEXR/IlmImf/ImfArray.h"
+-#include "../OpenEXR/Half/half.h"
++#include "OpenEXR/ImfIO.h"
++#include "OpenEXR/Iex.h"
++#include "OpenEXR/ImfOutputFile.h"
++#include "OpenEXR/ImfInputFile.h"
++#include "OpenEXR/ImfRgbaFile.h"
++#include "OpenEXR/ImfChannelList.h"
++#include "OpenEXR/ImfRgba.h"
++#include "OpenEXR/ImfArray.h"
++#include "OpenEXR/half.h"
+ 
+ 
+ // ==========================================================

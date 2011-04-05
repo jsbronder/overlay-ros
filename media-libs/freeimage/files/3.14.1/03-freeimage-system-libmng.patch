@@ -1,0 +1,24 @@
+System libmng
+
+From: Azamat H. Hackimov <azamat.hackimov@gmail.com>
+
+
+---
+
+ Source/FreeImage/PluginMNG.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+
+diff --git a/Source/FreeImage/PluginMNG.cpp b/Source/FreeImage/PluginMNG.cpp
+index 775b126..7472842 100644
+--- a/Source/FreeImage/PluginMNG.cpp
++++ b/Source/FreeImage/PluginMNG.cpp
+@@ -22,7 +22,7 @@
+ #include "FreeImage.h"
+ #include "Utilities.h"
+ 
+-#include "../LibMNG/libmng.h"
++#include "libmng.h"
+ //#include "../LibMNG/libmng_data.h"
+ 
+ // ==========================================================
