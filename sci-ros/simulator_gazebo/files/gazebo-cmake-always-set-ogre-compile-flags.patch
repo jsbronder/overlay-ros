@@ -1,0 +1,28 @@
+From 3a1de211a61235b52ba30e380ec33960b247ac87 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 29 Mar 2011 17:21:43 -0400
+Subject: [PATCH 1/2] cmake:  always set ogre compile flags
+
+---
+ cmake/SearchForStuff.cmake |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/cmake/SearchForStuff.cmake b/cmake/SearchForStuff.cmake
+index b2c62c6..b0aeec4 100644
+--- a/cmake/SearchForStuff.cmake
++++ b/cmake/SearchForStuff.cmake
+@@ -116,6 +116,11 @@ if (PKG_CONFIG_FOUND)
+     endif (NOT OGRE_FOUND)
+       
+   endif (OGRE-RTShaderSystem_FOUND)
++  set(OGRE_LDFLAGS ${ogre_ldflags})
++  set(OGRE_INCLUDE_DIRS ${ogre_include_dirs})
++  set(OGRE_LIBRARY_DIRS ${ogre_library_dirs})
++  set(OGRE_LIBRARIES ${ogre_libraries})
++  set(OGRE_CFLAGS ${ogre_cflags})
+ 
+ 
+   set (OGRE_LIBRARY_PATH ${ogre_library_dirs} CACHE INTERNAL "Ogre library path")
+-- 
+1.7.3.4
+

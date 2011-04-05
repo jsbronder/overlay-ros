@@ -1,0 +1,34 @@
+From 33159a102fd1ef98fd7403aa251b53182e923f9c Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 29 Mar 2011 17:50:28 -0400
+Subject: [PATCH] gazebo:  add patch dir
+
+---
+ simulator_gazebo/gazebo/Makefile.gazebo.tarball |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/simulator_gazebo/gazebo/Makefile.gazebo.tarball b/simulator_gazebo/gazebo/Makefile.gazebo.tarball
+index 414efa5..f08b715 100644
+--- a/simulator_gazebo/gazebo/Makefile.gazebo.tarball
++++ b/simulator_gazebo/gazebo/Makefile.gazebo.tarball
+@@ -11,6 +11,7 @@ INITIAL_DIR = build/gazebo-r8967
+ SOURCE_DIR = build/gazebo
+ UNPACK_CMD = tar xzf
+ MD5SUM_FILE = $(FILENAME).md5sum
++GENTOO_PATCHES = $(wildcard gentoo-patches/*.patch)
+ include $(shell rospack find mk)/download_unpack_build.mk
+ 
+ OGRE_PKG = $(shell rospack find ogre)/ogre/lib/pkgconfig
+@@ -76,6 +77,9 @@ CMAKE_CMD = $(PKG_PATHS) $(PATHS) $(CMAKE) $(CMAKE_ARGS)
+ 
+ installed: wiped $(SOURCE_DIR)/unpacked
+ 	if [ ! -d $(SOURCE_DIR)/build ]; then mkdir -p $(SOURCE_DIR)/build; fi
++	for p in $(GENTOO_PATCHES); do \
++		patch -p1 -d $(SOURCE_DIR) < $$p; \
++	done
+ 	cd $(SOURCE_DIR)/build && $(CMAKE_CMD) ..
+ 	cd $(SOURCE_DIR)/build && $(PKG_PATHS) $(PATHS) make $(ROS_PARALLEL_JOBS) && make install
+ 	rm -f $(SOURCE_DIR)/build/server/gazebo #remove gazebo's executable, use gazeboros node
+-- 
+1.7.3.4
+
