@@ -1,0 +1,34 @@
+From 3d74467850c6597cc578abed3a13a43f5817de36 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 21 Mar 2011 18:59:16 -0400
+Subject: [PATCH] gmapping:  add gentoo patches
+
+---
+ slam_gmapping/gmapping/Makefile.gmapping |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/slam_gmapping/gmapping/Makefile.gmapping b/slam_gmapping/gmapping/Makefile.gmapping
+index d290ad3..fc78978 100644
+--- a/slam_gmapping/gmapping/Makefile.gmapping
++++ b/slam_gmapping/gmapping/Makefile.gmapping
+@@ -9,12 +9,17 @@ TARBALL_URL = http://pr.willowgarage.com/downloads/$(FILENAME)
+ SOURCE_DIR = build/gmapping_export
+ UNPACK_CMD = tar xzf
+ MD5SUM_FILE = $(FILENAME).md5sum
++GENTOO_PATCHES = $(wildcard gentoo-patches/*.patch)
++
+ include $(shell rospack find mk)/download_unpack_build.mk
+ 
+ PATCH = gmapping-r39.patch
+ 
+ installed: wiped $(SOURCE_DIR)/unpacked
+ 	cd $(SOURCE_DIR) && patch -p0 < ../../$(PATCH) && ./configure
++	for p in $(GENTOO_PATCHES); do \
++		patch -p1 -d $(SOURCE_DIR) < $$p; \
++	done
+ 	cd $(SOURCE_DIR) && make
+ 	# Poor-man's install step
+ 	mkdir -p lib
+-- 
+1.7.3.4
+
