@@ -1,0 +1,30 @@
+From 9a251c3438390ff1a6dc15eaa8c2d24980d382dd Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 21 Mar 2011 11:57:28 -0400
+Subject: [PATCH] convex_decomposition:  respect user flags
+
+---
+ Makefile |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index e92b84c..adf3d51 100644
+--- a/Makefile
++++ b/Makefile
+@@ -30,9 +30,11 @@ CC = g++
+ 
+ DEBUG = -ggdb
+ 
+-CFLAGS = -IConvexDecomposition -Wall -c $(DEBUG)
++CFLAGS ?=
++CFLAGS += -IConvexDecomposition -Wall -c $(DEBUG)
+ 
+-LFLAGS = $(DEBUG)
++LDFLAGS ?=
++LFLAGS = $(LDFLAGS) $(DEBUG)
+ 
+ convex_decomposition: $(OBJS)
+ 	$(CC) $(LFLAGS) $(OBJS) -o convex_decomposition
+-- 
+1.7.3.4
+

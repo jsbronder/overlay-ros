@@ -1,0 +1,34 @@
+From 4808a2a82ed40669b3fb1b4bfa465b392adecc39 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 21 Mar 2011 12:21:17 -0400
+Subject: [PATCH] convex_decomposition:  add gentoo patches
+
+---
+ convex_decomposition/Makefile |    4 ++++
+ 1 files changed, 4 insertions(+), 0 deletions(-)
+
+diff --git a/robot_model/convex_decomposition/Makefile b/robot_model/convex_decomposition/Makefile
+index 076c2eb..c6e5dff 100644
+--- a/robot_model/convex_decomposition/Makefile
++++ b/robot_model/convex_decomposition/Makefile
+@@ -6,6 +6,7 @@ SOURCE_DIR = build/convex_decomposition
+ INITIAL_DIR = build/ConvexDecomposition
+ UNPACK_CMD = unzip
+ TARBALL_PATCH=convex_decomposition.patch
++GENTOO_PATCHES=$(wildcard gentoo-patches/*.patch)
+ 
+ include $(shell rospack find mk)/download_unpack_build.mk
+ 
+@@ -16,6 +17,9 @@ installed: wiped $(SOURCE_DIR)/unpacked
+ 	@echo "ROOT is: $(ROOT)"
+ 	-mkdir -p $(ROOT)
+ 	-mkdir -p $(ROOT)/bin
++	for p in $(GENTOO_PATCHES); do \
++		patch -p1 -d $(SOURCE_DIR) < $$p; \
++	done
+ 	cd $(SOURCE_DIR) ; make $(ROS_PARALLEL_JOBS); make install
+ 	touch installed
+ 
+-- 
+1.7.3.4
+

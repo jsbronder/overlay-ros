@@ -1,0 +1,34 @@
+From 9f7cb2dea5e9ed4cbf0185da831dca4e34e3d850 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 21 Mar 2011 12:44:46 -0400
+Subject: [PATCH] colladadom:  respect user flags
+
+---
+ dom/make/common.mk |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/dom/make/common.mk b/dom/make/common.mk
+index e2c0e9d..05a900d 100644
+--- a/dom/make/common.mk
++++ b/dom/make/common.mk
+@@ -8,7 +8,7 @@ ar := ar rcs
+ exeSuffix :=
+ endif
+ 
+-ccFlags := -Wall
++ccFlags := -Wall $(CFLAGS)
+ ifeq ($(conf),debug)
+ ccFlags += -g -D_DEBUG
+ debugSuffix := -d
+@@ -24,7 +24,7 @@ ifeq ($(os),mac)
+ ccFlags += $(addprefix -arch ,$(subst x86,i386,$(archs)))
+ endif
+ 
+-libOpts :=
++libOpts := $(LDFLAGS)
+ ifeq ($(os),windows)
+ # In case we're using the Cygwin compiler/linker, instruct cygwin to use the
+ # MinGW compiler to get a native Windows build. If you actually want a
+-- 
+1.7.3.4
+
