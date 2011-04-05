@@ -1,0 +1,28 @@
+From 7d10344eccedf21905c52f80de49f7a20aceef94 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 21 Mar 2011 17:33:53 -0400
+Subject: [PATCH] stage:  add mising libraries
+
+Correctly use FLTK_LIBS over FLTK_LIBS2, add missing links against
+libpng and libjpeg and also use pthreads.
+---
+ libstage/CMakeLists.txt |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/libstage/CMakeLists.txt b/libstage/CMakeLists.txt
+index 91a3c5c..8d47782 100644
+--- a/libstage/CMakeLists.txt
++++ b/libstage/CMakeLists.txt
+@@ -51,7 +51,8 @@ add_library(stage SHARED ${stageSrcs})
+ target_link_libraries( stage
+ 		       ${OPENGL_LIBRARIES}
+   				 ${LTDL_LIB}
+-  				 ${FLTK_LIBS2}
++  				 ${FLTK_LIBS}
++                 -lpng -ljpeg -pthread
+ )
+ 
+ # causes the shared library to have a version number
+-- 
+1.7.3.4
+
