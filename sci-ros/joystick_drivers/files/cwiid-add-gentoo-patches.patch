@@ -1,0 +1,32 @@
+From 5c8599564673298c466777f55153dd0e9886139b Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 28 Mar 2011 15:04:58 -0400
+Subject: [PATCH] cwiid:  add gentoo patches
+
+---
+ joystick_drivers/cwiid/Makefile |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/joystick_drivers/cwiid/Makefile b/joystick_driver/cwiid/Makefile
+index 875dba9..0485d26 100644
+--- a/joystick_drivers/cwiid/Makefile
++++ b/joystick_drivers/cwiid/Makefile
+@@ -13,10 +13,15 @@ SOURCE_DIR = build/cwiid-svn
+ UNPACK_CMD = tar xzf
+ MD5SUM_FILE = $(FILENAME).md5sum
+ TARBALL_PATCH = cwiid-201.patch
++GENTOO_PATCHES = $(wildcard gentoo-patches/*.patch)
++
+ include $(shell rospack find mk)/download_unpack_build.mk
+ 
+ 
+ installed: wiped $(SOURCE_DIR)/unpacked
++	for p in $(GENTOO_PATCHES); do \
++		patch -p1 -d $(SOURCE_DIR) < $$p; \
++	done
+ 	cd $(SOURCE_DIR) && autoreconf -i -s
+ 	cd $(SOURCE_DIR) && ./configure --disable-ldconfig --prefix=$(CURDIR)/cwiid
+ 	cd $(SOURCE_DIR) && make $(ROS_PARALLEL_JOBS) && make install
+-- 
+1.7.3.4
+

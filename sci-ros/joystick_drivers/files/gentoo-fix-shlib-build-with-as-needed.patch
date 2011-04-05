@@ -1,0 +1,27 @@
+From d9398bf21e562387a9736fb66606e31fc20470ec Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 28 Mar 2011 15:19:47 -0400
+Subject: [PATCH] fix shlib build with as-needed
+
+---
+ common/include/lib.mak.in |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/common/include/lib.mak.in b/common/include/lib.mak.in
+index 5e81ff3..0411d41 100644
+--- a/common/include/lib.mak.in
++++ b/common/include/lib.mak.in
+@@ -25,8 +25,8 @@ $(STATIC_LIB): $(OBJECTS)
+ 	ar rcs $(STATIC_LIB) $(OBJECTS)
+ 
+ $(SHARED_LIB): $(OBJECTS)
+-	$(CC) -shared -Wl,-soname,$(SO_NAME) $(LDFLAGS) $(LDLIBS) \
+-	      -o $(SHARED_LIB) $(OBJECTS)
++	$(CC) -shared -Wl,-soname,$(SO_NAME) $(LDFLAGS) \
++	      -o $(SHARED_LIB) $(OBJECTS) $(LDLIBS) 
+ 
+ install: install_header install_static install_shared
+ 
+-- 
+1.7.3.4
+

@@ -1,0 +1,54 @@
+From 6f895ce6ff9b45a1c858a2893b8b43a83dcd9422 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 28 Mar 2011 15:48:55 -0400
+Subject: [PATCH] spacenav:  respect user compile flags
+
+---
+ libspnav/Makefile.in  |    6 ++++--
+ spacenavd/Makefile.in |    6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/libspnav/Makefile.in b/libspnav/Makefile.in
+index 792ef5a..4bb1928 100644
+--- a/libspnav/Makefile.in
++++ b/libspnav/Makefile.in
+@@ -7,7 +7,9 @@ lib_so = $(soname).1
+ 
+ CC = gcc
+ AR = ar
+-CFLAGS = $(opt) $(dbg) -std=c89 -fpic -pedantic -Wall -Wno-strict-aliasing -g -I.
++CFLAGS ?=
++LDFLAGS ?=
++CFLAGS += $(opt) $(dbg) -std=c89 -fpic -pedantic -Wall -Wno-strict-aliasing -g -I.
+ 
+ .PHONY: all
+ all: $(lib_a) $(lib_so)
+@@ -16,7 +18,7 @@ $(lib_a): $(obj)
+ 	$(AR) rcs $@ $(obj)
+ 
+ $(lib_so): $(obj)
+-	$(CC) -shared -Wl,-soname,$(soname) -o $@ $(obj)
++	$(CC) -shared -Wl,-soname,$(soname) -o $@ $(obj) $(LDFLAGS)
+ 
+ %.o: $(srcdir)/%.c
+ 	$(CC) $(CFLAGS) -c $< -o $@
+diff --git a/spacenavd/Makefile.in b/spacenavd/Makefile.in
+index 14bd24a..485de5c 100644
+--- a/spacenavd/Makefile.in
++++ b/spacenavd/Makefile.in
+@@ -5,8 +5,10 @@ ctl = spnavd_ctl
+ 
+ CC = gcc
+ INSTALL = install
+-CFLAGS = -pedantic -Wall $(dbg) $(opt)
+-LDFLAGS = $(xlib)
++CFLAGS ?=
++LDFLAGS ?=
++CFLAGS += -pedantic -Wall $(dbg) $(opt)
++LDFLAGS += $(xlib)
+ 
+ $(bin): $(obj)
+ 	$(CC) -o $@ $(obj) $(LDFLAGS)
+-- 
+1.7.3.4
+

@@ -1,0 +1,34 @@
+From d17ad991e014ddee94e0937e212f220e717f92dc Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Mon, 28 Mar 2011 15:33:02 -0400
+Subject: [PATCH] spacenav:  add gentoo patches
+
+---
+ joystick_drivers/spacenav/Makefile |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/joystick_drivers/spacenav/Makefile b/joystick_drivers/spacenav/Makefile
+index 15fae89..b0cf43e 100644
+--- a/joystick_drivers/spacenav/Makefile
++++ b/joystick_drivers/spacenav/Makefile
+@@ -7,12 +7,16 @@ SVN_DIR = spacenav_svn
+ 
+ TAR = spacenav_svn_r91.tgz
+ URL = http://pr.willowgarage.com/downloads/$(TAR)
++GENTOO_PATCHES = $(wildcard gentoo-patches/*.patch)
+ 
+ $(SVN_DIR):
+ 	wget $(URL)
+ 	tar xvzf $(TAR) 
+ 
+-installed: $(SVN_DIR) 
++installed: $(SVN_DIR)
++	for p in $(GENTOO_PATCHES); do \
++		patch -p1 -d $(SVN_DIR)	< $$p; \
++	done
+ 	cd $(SVN_DIR)/spacenavd && ./configure --prefix=$(CURDIR)/spacenavd
+ 	cd $(SVN_DIR)/spacenavd && make
+ 	#cd $(SVN_DIR)/spacenavd && make && make install
+-- 
+1.7.3.4
+
