@@ -13,16 +13,29 @@
 # stack has been built, the eclass will fix the embedded RPATHS and wrap the
 # install to the correct location in /opt.
 
-SRC_URI="https://code.ros.org/svn/release/download/stacks/${PN}/${P}/${P}.tar.bz2"
+# @ECLASS-VARIABLE: ROS_STACK
+# @DESCRIPTION:
+# Name of the ROS stack containing the desired ROS package(s).  The default
+# is ${PN}.
+ROS_STACK=${ROS_STACK:=${PN}}
+
+SRC_URI="https://code.ros.org/svn/release/download/stacks/${ROS_STACK}/${ROS_STACK}-${PV}/${ROS_STACK}-${PV}.tar.bz2"
 S="${WORKDIR}"/build
 RDEPEND="app-admin/chrpath"
-ROS_S="${S}"/${PN}
+ROS_S="${S}"/${ROS_STACK}
+
+
+# @ECLASS-VARIABLE: ROS_PKGS
+# @DESCRIPTION:
+# Packages within the ROS stack to install.  If unset, the entire stack will be
+# installed.
+# ROS_PKGS=""
 
 # @ECLASS-VARIABLE: ROS_DESTDIR
 # @DESCRIPTION:
 # Destination directory within ros distribution.  There should never be a reason
 # to modify this unless the ebuild is not building a stack (i.e. ros itself).
-ROS_DESTDIR=${ROS_DESTDIR:-stacks/${PN}}
+ROS_DESTDIR=${ROS_DESTDIR:-stacks/${ROS_STACK}}
 
 # @ECLASS-VARIABLE: ROS_NEED_STACKS
 # @DESCRIPTION:
@@ -154,7 +167,7 @@ ros_pkg_setup() {
 ros_src_unpack() {
 	unpack ${A}
 	mkdir -p "${S}" || die
-	mv "${WORKDIR}"/${P} "${ROS_S}" || die
+	mv "${WORKDIR}"/${ROS_STACK}-${PV} "${ROS_S}" || die
 	_ros_make_stack_links
 }
 
@@ -171,7 +184,7 @@ _ros_make_stack_links() {
 	mkdir -p "${WORKDIR}"/stacks
 	for s in ${ROOT}/${ROS_DIST_ROOT}/stacks/*; do
 		[ ! -d "${s}" ] && continue
-		[ "$(basename ${s})" == "${PN}" ] && continue
+		[ "$(basename ${s})" == "${ROS_STACK}" ] && continue
 		ln -s "${s}" "${WORKDIR}"/stacks || die
 	done
 }
@@ -200,7 +213,7 @@ ros_src_compile() {
 		--mark-installed \
 		--no-rosdep \
 		--status-rate=0 \
-		${PN} || die
+		${ROS_PKGS:-${PN}} || die
 }
 
 
@@ -248,7 +261,14 @@ ros_src_install() {
 		-exec sed -i "s|${S}|${canon_path}/stacks|" {} \;
 
 	dodir ${ROS_DIST_ROOT}/${ROS_DESTDIR}
-	cp -pPR "${ROS_S}"/* "${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR} || die
+	if [ -z "${ROS_PKGS}" ]; then
+		cp -pPR "${ROS_S}"/* "${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR} || die
+	else
+		for f in ${ROS_PKGS}; do
+			mkdir -p "${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR}/${f} || die
+			cp -pPR "${ROS_S}"/${f}	"${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR}/${f} || die
+		done
+	fi
 }
 
 # @FUNCTION: ros_add_pkg_patches
