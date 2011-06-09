@@ -23,7 +23,8 @@ DEPEND="dev-python/pyyaml
 	x11-libs/wxGTK:2.8[X]
 	dev-python/matplotlib
 	dev-python/paramiko
-	dev-python/imaging"
+	dev-python/imaging
+	dev-libs/boost"
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
