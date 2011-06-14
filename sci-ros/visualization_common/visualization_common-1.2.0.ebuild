@@ -3,10 +3,11 @@
 # $Header: $
 
 EAPI=3
-inherit ros
+WX_GTK_VER="2.8"
+inherit wxwidgets ros
 
 DESCRIPTION="Packages for gathering, viewing, and analyzing ROS diagnostics data"
-HOMEPAGE="http://www.ros.org/wiki/diagnostics"
+HOMEPAGE="http://www.ros.org/wiki/visualization_common"
 
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
@@ -14,5 +15,8 @@ IUSE=""
 SLOT="cturtle"
 
 # rosdep:  freeimage, nvidia-cg-toolkit, x11-libs/libXrandr
-DEPEND="sci-ros/common_msgs:${SLOT}"
+DEPEND="sci-ros/common_msgs:${SLOT}
+	x11-libs/libXaw
+	media-libs/freeimage
+	x11-libs/wxGTK:2.8"
 RDEPEND="${DEPEND}"
