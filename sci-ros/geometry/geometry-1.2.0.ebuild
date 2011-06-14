@@ -14,8 +14,9 @@ IUSE=""
 SLOT="cturtle"
 
 DEPEND="sci-ros/common_msgs:${SLOT}
-	dev-libs/boost"
-# rosdep.yaml claims media-libs/freeglut and dev-python/sip
+	dev-libs/boost
+	media-libs/freeglut"
+# rosdep.yaml claims dev-python/sip
 RDEPEND="${DEPEND}"
 
 geometry_rpath_fix_function() {
