@@ -21,7 +21,7 @@ COMMON_DEPEND="sci-ros/common_msgs:${SLOT}
 	media-libs/jasper
 	media-libs/libpng"
 DEPEND="${COMMON_DEPEND}
-	dev-vcs/subversion"
+	dev-vcs/subversion[webdav-neon]"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
