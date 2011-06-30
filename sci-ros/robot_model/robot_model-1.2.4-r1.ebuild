@@ -15,8 +15,9 @@ IUSE=""
 SLOT="cturtle"
 
 DEPEND="sci-ros/common:${SLOT}
-	sci-ros/geometry:${SLOT}"
-# rosdep.yaml claims dev-libs/libpcre
+	sci-ros/geometry:${SLOT}
+	net-misc/curl
+	dev-libs/libpcre"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
