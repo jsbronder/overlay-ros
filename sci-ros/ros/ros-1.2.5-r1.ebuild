@@ -24,7 +24,8 @@ DEPEND="dev-python/pyyaml
 	dev-python/matplotlib
 	dev-python/paramiko
 	dev-python/imaging
-	dev-libs/boost"
+	dev-libs/boost
+	sys-libs/db"
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
