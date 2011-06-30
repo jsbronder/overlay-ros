@@ -14,11 +14,13 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="cturtle"
 
-DEPEND="sci-ros/common:${SLOT}
+COMMON_DEPEND="sci-ros/common:${SLOT}
 	sci-ros/geometry:${SLOT}
 	net-misc/curl
 	dev-libs/libpcre"
-RDEPEND="${DEPEND}"
+DEPEND="${COMMON_DEPEND}
+	app-arch/unzip"
+RDEPEND="${COMMON_DEPEND}"
 
 src_prepare() {
 	epatch "${FILESDIR}"/convex_decomposition-add-gentoo-patches.patch
