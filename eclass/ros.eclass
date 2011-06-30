@@ -21,7 +21,8 @@ ROS_STACK=${ROS_STACK:=${PN}}
 
 SRC_URI="https://code.ros.org/svn/release/download/stacks/${ROS_STACK}/${ROS_STACK}-${PV}/${ROS_STACK}-${PV}.tar.bz2"
 S="${WORKDIR}"/build
-DEPEND="app-admin/chrpath"
+DEPEND="app-admin/chrpath
+	dev-util/cmake"
 ROS_S="${S}"/${ROS_STACK}
 
 
