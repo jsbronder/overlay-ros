@@ -18,7 +18,7 @@ SLOT="cturtle"
 
 DEPEND="dev-python/pyyaml
 	dev-python/epydoc
-	dev-python/wxpython
+	dev-python/wxpython[cairo]
 	dev-libs/log4cxx
 	x11-libs/wxGTK:2.8[X]
 	dev-python/matplotlib
