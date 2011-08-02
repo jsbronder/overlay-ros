@@ -3,7 +3,8 @@
 # $Header: $
 
 EAPI=3
-inherit ros
+WX_GTK_VER="2.8"
+inherit wxwidgets ros
 
 DESCRIPTION="Visualization tools for robots"
 HOMEPAGE="http://www.ros.org/wiki/visualization"
