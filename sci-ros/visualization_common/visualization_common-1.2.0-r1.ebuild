@@ -14,9 +14,16 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="cturtle"
 
-# rosdep:  freeimage, nvidia-cg-toolkit, x11-libs/libXrandr
+# rosdep:  x11-libs/libXrandr
 DEPEND="sci-ros/common_msgs:${SLOT}
 	x11-libs/libXaw
 	media-libs/freeimage
-	x11-libs/wxGTK:2.8"
+	x11-libs/wxGTK:2.8
+	media-gfx/nvidia-cg-toolkit"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	local plugin_def="'-DOGRE_PLUGIN_PATH=\"${ROOT}${ROS_DIST_ROOT}/${ROS_DESTDIR}/ogre/ogre/lib/OGRE\"'"
+	sed -i "s|^add_definitions(\(.*\))|add_definitions(\1 ${plugin_def})|" \
+		${PN}/ogre_tools/CMakeLists.txt|| die
+}
