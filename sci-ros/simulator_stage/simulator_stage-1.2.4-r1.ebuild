@@ -15,7 +15,7 @@ SLOT="cturtle"
 
 DEPEND="sci-ros/geometry:${SLOT}
 	media-libs/libpng
-	media-libs/jpeg"
+	virtual/jpeg"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
