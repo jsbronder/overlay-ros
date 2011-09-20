@@ -267,7 +267,7 @@ ros_src_install() {
 	else
 		for f in ${ROS_PKGS}; do
 			mkdir -p "${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR}/${f} || die
-			cp -pPR "${ROS_S}"/${f}	"${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR}/${f} || die
+			cp -pPR "${ROS_S}"/${f}	"${D}"/${ROS_DIST_ROOT}/${ROS_DESTDIR}/ || die
 		done
 	fi
 }
