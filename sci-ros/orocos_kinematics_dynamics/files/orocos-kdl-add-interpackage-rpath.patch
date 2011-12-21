@@ -1,0 +1,28 @@
+diff --git a/orocos_kdl/models/CMakeLists.txt b/orocos_kdl/models/CMakeLists.txt
+index 436718b..67a0ab0 100644
+--- a/orocos_kdl/models/CMakeLists.txt
++++ b/orocos_kdl/models/CMakeLists.txt
+@@ -1,13 +1,14 @@
+ OPTION(BUILD_MODELS "Build models for some well known robots" FALSE)
+ 
+ IF(BUILD_MODELS)
+-  
++  SET(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE) 
+   ADD_LIBRARY(orocos-kdl-models SHARED puma560.cpp kukaLWR_DHnew.cpp) 
+   INCLUDE_DIRECTORIES(${PROJ_SOURCE_DIR}/src)
+   SET_TARGET_PROPERTIES( orocos-kdl-models PROPERTIES
+     SOVERSION "${KDL_VERSION_MAJOR}.${KDL_VERSION_MINOR}"
+     VERSION "${KDL_VERSION}"
+-    COMPILE_FLAGS "${CMAKE_CXX_FLAGS_ADD} ${KDL_CFLAGS}")
++    COMPILE_FLAGS "${CMAKE_CXX_FLAGS_ADD} ${KDL_CFLAGS}"
++    INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+   TARGET_LINK_LIBRARIES(orocos-kdl-models orocos-kdl)
+   
+   INSTALL_TARGETS( /lib orocos-kdl-models)
+@@ -32,4 +33,4 @@ IF(BUILD_MODELS_DEMO)
+   SET_TARGET_PROPERTIES( kukaLWRtestHCG PROPERTIES
+     COMPILE_FLAGS "${CMAKE_CXX_FLAGS_ADD} ${KDL_CFLAGS}")
+ 
+-ENDIF(BUILD_MODELS_DEMO)
+\ No newline at end of file
++ENDIF(BUILD_MODELS_DEMO)
