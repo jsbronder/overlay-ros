@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,7 +11,16 @@ HOMEPAGE="http://www.ros.org/wiki/image_common"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
-DEPEND="sci-ros/common:${SLOT}"
+DEPEND="sci-ros/common_msgs:${SLOT}
+	sci-ros/pluginlib:${SLOT}
+	dev-cpp/yaml-cpp"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	cd "${ROS_S}"
+	sed -i '/package="common_rosdeps"/d' \
+		camera_calibration_parsers/manifest.xml \
+		|| die
+}
