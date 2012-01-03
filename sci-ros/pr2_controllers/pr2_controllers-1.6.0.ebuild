@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,8 +11,13 @@ HOMEPAGE="http://www.ros.org/wiki/pr2_controllers"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 DEPEND="sci-ros/pr2_mechanism:${SLOT}
-	sci-ros/visualization_common:${SLOT}"
+	sci-ros/control:${SLOT}"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	cd "${ROS_S}" || die
+	sed -i '/package="eigen"/d' pr2_mechanism_controllers/manifest.xml || die
+}
