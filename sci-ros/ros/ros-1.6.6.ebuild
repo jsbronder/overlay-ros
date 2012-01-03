@@ -5,8 +5,7 @@
 EAPI=3
 ROS_DESTDIR="ros"
 ROS_NEED_STACKS=0
-WX_GTK_VER="2.8"
-inherit ros wxwidgets
+inherit ros
 
 DESCRIPTION="An open-source, meta-operating system for your robot"
 HOMEPAGE="http://www.ros.org/wiki/ROS"
@@ -14,22 +13,14 @@ HOMEPAGE="http://www.ros.org/wiki/ROS"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
-DEPEND="dev-python/pyyaml
-	dev-python/epydoc
-	dev-python/wxpython[cairo]
-	dev-libs/log4cxx
-	x11-libs/wxGTK:2.8[X]
-	dev-python/matplotlib
-	dev-python/paramiko
-	dev-python/imaging
-	dev-libs/boost
-	sys-libs/db"
+DEPEND=""
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
-	wxwidgets_pkg_setup
+	# ros_pkg_setup is not being called on purpose as we're building
+	# the utilities that it relies upon.
 	return 0
 }
 
@@ -39,10 +30,13 @@ src_prepare() {
 		-e 's,--rosdep-install,--disable-logging,' \
 		${PN}/Makefile
 	write_setup_file || die
+
+	cd "${S}"/${PN}
+	epatch "${FILESDIR}"/rospack-remove-braindead-priv-dropping.patch
 }
 
 src_compile() {
-	"${S}"/setup_gentoo.sh make -C ${PN} || die
+	"${S}"/setup_gentoo.sh make -C ${PN}
 	"${S}"/setup_gentoo.sh rosmake \
 		--mark-installed \
 		--disable-logging \
@@ -69,7 +63,7 @@ write_setup_file() {
 
 		source ${ROS_ROOT}/tools/rosbash/rosbash
 
-		$*
+		exec "$@"
 	EOF
 	chmod +x "${S}"/setup_gentoo.sh
 }
