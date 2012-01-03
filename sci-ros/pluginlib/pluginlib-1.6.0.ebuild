@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -14,7 +14,7 @@ IUSE=""
 SLOT="electric"
 
 DEPEND="sci-ros/ros_comm:${SLOT}
-	dev-libs/tinyxml"
+	dev-libs/tinyxml[stl]"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
