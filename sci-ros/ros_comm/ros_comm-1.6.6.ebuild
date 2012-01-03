@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -14,6 +14,7 @@ IUSE=""
 SLOT="electric"
 
 DEPEND="sci-ros/ros:${SLOT}
+	dev-libs/apr[uuid]
 	dev-libs/apr-util
 	app-arch/bzip2
 	dev-libs/log4cxx
