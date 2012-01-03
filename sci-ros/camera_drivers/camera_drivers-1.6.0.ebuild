@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,9 +13,17 @@ HOMEPAGE="http://www.ros.org/wiki/camera_drivers"
 LICENSE="BSD LGPL-2.1 GPL-2"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 DEPEND="sci-ros/driver_common:${SLOT}
 	sci-ros/image_common:${SLOT}
-	sci-ros/geometry:${SLOT}"
+	sci-ros/geometry:${SLOT}
+	sci-ros/nodelet_core:${SLOT}"
 RDEPEND="${DEPEND}"
+
+# TODO:  ignored LDFLAGS in prosilica_gige_sdk
+
+src_install() {
+	ros_src_install
+	rm -f "${D}"/opt/ros/$(ros_get_dist)/${ROS_DESTDIR}/prosilica_gige_sdk/bin/Sample*
+}
