@@ -1,0 +1,55 @@
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 30 Dec 2010 10:15:23 -0500
+Subject: [PATCH] rename library to match package name
+
+---
+ Makefile |   15 ++++++++-------
+ 1 files changed, 8 insertions(+), 7 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 9ad0ab8..724788a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,6 @@
+ PACKAGE=cminpack
+ VERSION=1.0.2
++LIBNAME=libcminpack
+ 
+ #CC=cc
+ CC ?= gcc
+@@ -20,19 +21,19 @@ MANDIR ?= ${DESTDIR}/share/man
+ #  Static library target
+ #
+ 
+-all: libminpack.a
++all: $(LIBNAME).a
+ 
+-libminpack.a:  $(OBJS)
++$(LIBNAME).a:  $(OBJS)
+ 	ar r $@ $(OBJS); ranlib $@
+ 
+ %.o: %.c
+ 	${CC} ${CFLAGS} -c -o $@ $<
+ 
+-install: libminpack.a
++install: $(LIBNAME).a
+ 	install -d ${DESTDIR}/lib
+-	cp libminpack.a ${DESTDIR}/lib
+-	chmod 644 ${DESTDIR}/lib/libminpack.a
+-	ranlib -t ${DESTDIR}/lib/libminpack.a # might be unnecessary
++	cp $(LIBNAME).a ${DESTDIR}/lib
++	chmod 644 ${DESTDIR}/lib/$(LIBNAME).a
++	ranlib -t ${DESTDIR}/lib/$(LIBNAME).a # might be unnecessary
+ 	install -d ${DESTDIR}/include
+ 	cp minpack.h ${DESTDIR}/include
+ 	chmod 644 ${DESTDIR}/include/minpack.h
+@@ -44,7 +45,7 @@ install: libminpack.a
+ 	done
+ 
+ clean:
+-	rm -f *.o libminpack.a *~ #*#
++	rm -f *.o $(LIBNAME).a *~ #*#
+ 
+ .PHONY: dist
+ dist:
+-- 

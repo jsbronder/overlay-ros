@@ -1,0 +1,53 @@
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 30 Dec 2010 10:26:31 -0500
+Subject: [PATCH] cleanup install target
+
+---
+ Makefile |   26 +++++++++++---------------
+ 1 files changed, 11 insertions(+), 15 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index d719481..7257c57 100644
+--- a/Makefile
++++ b/Makefile
+@@ -18,8 +18,9 @@ dogleg_.o fdjac1_.o hybrd_.o  lmder1_.o lmdif_.o  lmstr_.o  qrsolv_.o rwupdt_.o
+ dpmpar_.o fdjac2_.o hybrj1_.o lmder_.o  lmpar_.o  qform_.o  r1mpyq_.o covar_.o
+ 
+ # target dir for install
+-DESTDIR ?= /usr/local
+-MANDIR ?= ${DESTDIR}/share/man
++DESTDIR ?= /
++PREFIX ?= /usr/local
++MANDIR ?= $(DESTDIR)$(PREFIX)/share/man
+ #
+ #  Static library target
+ #
+@@ -37,19 +38,14 @@ $(LIBNAME).so.$(VERSION):  $(OBJS)
+ 	${CC} ${CFLAGS} -fPIC -c -o $@ $<
+ 
+ install: $(LIBNAME).a $(LIBNAME).so.$(VERSION)
+-	install -d ${DESTDIR}/lib
+-	cp libminpack.a ${DESTDIR}/lib
+-	chmod 644 ${DESTDIR}/lib/libminpack.a
+-	ranlib -t ${DESTDIR}/lib/libminpack.a # might be unnecessary
+-	install -m 644 $(LIBNAME).so.$(VERSION) $(DESTDIR)/lib/
+-	$(LN_S) $(LIBNAME).so.$(VERSION) $(DESTDIR)/lib/$(LIBNAME).so
+-	$(LN_S) $(LIBNAME).so.$(VERSION) $(DESTDIR)/lib/$(LIBNAME).so.$(MAJ_VER)
+-	install -d ${DESTDIR}/include
+-	cp minpack.h ${DESTDIR}/include
+-	chmod 644 ${DESTDIR}/include/minpack.h
+-	cp cminpack.h ${DESTDIR}/include
+-	chmod 644 ${DESTDIR}/include/cminpack.h
+-	install -d ${MANDIR}/man3
++	install -d $(DESTDIR)$(PREFIX)/lib
++	install -m 644 $(LIBNAME).a $(DESTDIR)$(PREFIX)/lib
++	install -m 644 $(LIBNAME).so.$(VERSION) $(DESTDIR)$(PREFIX)/lib/
++	$(LN_S) $(LIBNAME).so.$(VERSION) $(DESTDIR)$(PREFIX)/lib/$(LIBNAME).so
++	$(LN_S) $(LIBNAME).so.$(VERSION) $(DESTDIR)$(PREFIX)/lib/$(LIBNAME).so.$(MAJ_VER)
++	install -d $(DESTDIR)$(PREFIX)/include
++	install -m 644 minpack.h cminpack.h $(DESTDIR)$(PREFIX)/include/
++	install -d $(MANDIR)/man3
+ 	for f in doc/*.3; do \
+ 		install -m 644 $$f ${MANDIR}/man3/; \
+ 	done
+-- 

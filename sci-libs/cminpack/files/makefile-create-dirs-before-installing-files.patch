@@ -1,0 +1,25 @@
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 21 Dec 2010 16:35:39 -0500
+Subject: [PATCH] makefile: create dirs before installing files
+
+---
+ Makefile |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index f469de6..207d295 100644
+--- a/Makefile
++++ b/Makefile
+@@ -28,9 +28,11 @@ libminpack.a:  $(OBJS)
+ 	${CC} ${CFLAGS} -c -o $@ $<
+ 
+ install: libminpack.a
++	install -d ${DESTDIR}/lib
+ 	cp libminpack.a ${DESTDIR}/lib
+ 	chmod 644 ${DESTDIR}/lib/libminpack.a
+ 	ranlib -t ${DESTDIR}/lib/libminpack.a # might be unnecessary
++	install -d ${DESTDIR}/include
+ 	cp minpack.h ${DESTDIR}/include
+ 	chmod 644 ${DESTDIR}/include/minpack.h
+ 	cp cminpack.h ${DESTDIR}/include
+-- 

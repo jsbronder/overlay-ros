@@ -1,0 +1,33 @@
+From 027e0d9bdee62db2fb6e11617794bbc469883786 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Fri, 10 Jun 2011 21:28:41 +0000
+Subject: [PATCH] makefile:  respect ldflags
+
+---
+ Makefile |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index 7257c57..089513a 100644
+--- a/Makefile
++++ b/Makefile
+@@ -8,6 +8,7 @@ MAJ_VER=1
+ CC ?= gcc
+ CFLAGS ?= -O2 -g -Wall -Wextra -I.
+ LN_S ?= ln -s
++LDFLAGS ?=
+ #CFLAGS= -g -Wall -I.
+ OBJS = \
+ chkder.o  enorm.o   hybrd1.o  hybrj.o   lmdif1.o  lmstr1.o  qrfac.o   r1updt.o \
+@@ -32,7 +33,7 @@ $(LIBNAME).a:  $(OBJS)
+ 
+ $(LIBNAME).so.$(VERSION):  $(OBJS)
+ 	$(CC) $(CFLAGS) -shared -Wl,-soname,$(LIBNAME).so.$(MAJ_VER) \
+-		-o $@ $(OBJS)
++		-o $@ $(OBJS) $(LDFLAGS)
+ 
+ %.o: %.c
+ 	${CC} ${CFLAGS} -fPIC -c -o $@ $<
+-- 
+1.7.3.4
+

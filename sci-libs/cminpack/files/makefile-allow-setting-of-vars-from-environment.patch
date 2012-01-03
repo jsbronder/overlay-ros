@@ -1,0 +1,35 @@
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 21 Dec 2010 16:30:26 -0500
+Subject: [PATCH] makefile: allow setting of vars from environment
+
+Allow CC, CFLAGS and DESTDIR to be pulled in from the
+environment.
+---
+ Makefile |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/Makefile b/Makefile
+index c2d7c36..f469de6 100644
+--- a/Makefile
++++ b/Makefile
+@@ -2,8 +2,8 @@ PACKAGE=cminpack
+ VERSION=1.0.2
+ 
+ #CC=cc
+-CC=gcc
+-CFLAGS= -O2 -g -Wall -Wextra -I.
++CC ?= gcc
++CFLAGS ?= -O2 -g -Wall -Wextra -I.
+ #CFLAGS= -g -Wall -I.
+ OBJS = \
+ chkder.o  enorm.o   hybrd1.o  hybrj.o   lmdif1.o  lmstr1.o  qrfac.o   r1updt.o \
+@@ -14,7 +14,7 @@ dogleg_.o fdjac1_.o hybrd_.o  lmder1_.o lmdif_.o  lmstr_.o  qrsolv_.o rwupdt_.o
+ dpmpar_.o fdjac2_.o hybrj1_.o lmder_.o  lmpar_.o  qform_.o  r1mpyq_.o covar_.o
+ 
+ # target dir for install
+-DESTDIR=/usr/local
++DESTDIR ?= /usr/local
+ #
+ #  Static library target
+ #
+-- 
