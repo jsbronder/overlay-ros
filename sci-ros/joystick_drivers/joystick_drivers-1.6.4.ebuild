@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -13,7 +13,7 @@ HOMEPAGE="http://www.ros.org/wiki/joystick_drivers"
 LICENSE="BSD GPL-3 GPL-2"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 # rosdep.yaml:  games-util/joysticks dev-libs/libusb
 # dev-python/pybluez net-wireless/bluez-utils (bluez-utils and libs)
