@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,7 +11,7 @@ HOMEPAGE="http://www.ros.org/wiki/laser_drivers"
 LICENSE="BSD LGPL-2.1"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 DEPEND="sci-ros/driver_common:${SLOT}"
 RDEPEND="${DEPEND}"
