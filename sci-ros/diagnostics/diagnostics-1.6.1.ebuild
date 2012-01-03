@@ -14,7 +14,7 @@ IUSE=""
 SLOT="electric"
 
 DEPEND="sci-ros/pluginlib:${SLOT}
-	dev-cpp/gtest"
+	|| ( dev-util/gtest dev-cpp/gtest )"
 RDEPEND="${DEPEND}"
 
 src_prepare() {
