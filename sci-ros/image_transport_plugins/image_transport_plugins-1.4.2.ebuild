@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,15 +11,10 @@ HOMEPAGE="http://www.ros.org/wiki/image_transport_plugins"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 DEPEND="sci-ros/image_common:${SLOT}
 	sci-ros/driver_common:${SLOT}
 	sci-ros/vision_opencv:${SLOT}
-	media-libs/libogg"
+	media-libs/libtheora"
 RDEPEND="${DEPEND}"
-
-src_prepare() {
-	sed -i 's,\(-ltheora \),\1-logg ,' \
-		"${ROS_S}"/libtheora/manifest.xml || die
-}
