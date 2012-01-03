@@ -21,6 +21,11 @@ DEPEND="sci-ros/common_msgs:${SLOT}
 # media-libs/sdl-image"
 RDEPEND="${DEPEND}"
 
+src_prepare() {
+	sed -i 's|cflags="\([^"\]*\)"|cflags="\1 -DTIXML_USE_STL"|' \
+		"${ROS_S}"/tinyxml/manifest.xml || die
+}
+
 ros_cleanup_function() {
 	local f
 
