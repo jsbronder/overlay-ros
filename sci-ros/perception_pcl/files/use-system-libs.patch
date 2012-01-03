@@ -1,0 +1,169 @@
+From 863a61e03a56ede489c15bda3972a1382c33860b Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 22 Dec 2011 19:01:43 -0500
+Subject: [PATCH] use system libs
+
+Use system versions of cminpack, flann and eigen3.
+---
+ cminpack/Makefile     |   27 +++------------------------
+ cminpack/manifest.xml |    2 +-
+ flann/Makefile        |   23 +++--------------------
+ flann/manifest.xml    |    2 +-
+ pcl/Makefile          |    4 ----
+ pcl/manifest.xml      |    3 +--
+ pcl_ros/manifest.xml  |    1 -
+ 7 files changed, 9 insertions(+), 53 deletions(-)
+
+diff --git a/cminpack/Makefile b/cminpack/Makefile
+index 404362c..f75736a 100644
+--- a/cminpack/Makefile
++++ b/cminpack/Makefile
+@@ -1,29 +1,8 @@
+ all: installed
+ 
+-VER = 1.1.3
+-TARBALL       = build/cminpack-$(VER).tar.gz
+-TARBALL_URL   = http://pr.willowgarage.com/downloads/cminpack-$(VER).tar.gz
+-UNPACK_CMD    = tar xfz
+-SOURCE_DIR    = build/cminpack-$(VER)
+-#TARBALL_PATCH = cminpack.pc.patch
+-MD5SUM_FILE   = cminpack-$(VER).tar.gz.md5sum
+-
+-include $(shell rospack find mk)/download_unpack_build.mk
+-
+-ifeq ($(shell uname -s 2>/dev/null),Darwin)
+-	LIBEXT=dylib
+-else
+-	LIBEXT=so
+-endif
+-
+-
+-installed: $(SOURCE_DIR)/unpacked Makefile
+-	echo "Building CMinpack..."
+-	cd $(SOURCE_DIR) && mkdir -p build && cd build && cmake -DUSE_FPIC=ON -DSHARED_LIBS=ON -DBUILD_EXAMPLES=OFF -DCMINPACK_LIB_INSTALL_DIR="." .. && make && cd ../../../../
+-	mkdir -p include lib
+-	cp $(SOURCE_DIR)/*.h include
+-	cp -P $(SOURCE_DIR)/build/libcminpack.* lib
++installed:
++	echo "Using system CMinpack..."
+ 	touch installed
+ clean: wipe
+ wipe:
+-	rm -rf build installed lib include
++	rm -rf installed
+diff --git a/cminpack/manifest.xml b/cminpack/manifest.xml
+index 590245e..1052afa 100644
+--- a/cminpack/manifest.xml
++++ b/cminpack/manifest.xml
+@@ -66,7 +66,7 @@
+   <review status="3rdparty" notes=""/>
+   <url>http://devernay.free.fr/hacks/cminpack.html</url>
+   <export>
+-    <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib -L${prefix}/lib -lcminpack" />
++    <cpp lflags="-lcminpack" />
+   </export>
+ 
+   <platform os="ubuntu" version="9.04"/>
+diff --git a/flann/Makefile b/flann/Makefile
+index c84b45a..6fd32dc 100644
+--- a/flann/Makefile
++++ b/flann/Makefile
+@@ -1,31 +1,14 @@
+ all: installed
+ 
+-VER = 1.6.10
+-TARBALL       = build/flann-$(VER)-src.zip
+-TARBALL_URL   = http://people.cs.ubc.ca/~mariusm/uploads/FLANN/flann-$(VER)-src.zip
+-UNPACK_CMD    = unzip -x
+-SOURCE_DIR    = build/flann-$(VER)-src
+-TARBALL_PATCH = hist_intersect_union.patch doc.patch
+-MD5SUM_FILE   = flann-$(VER)-src.zip.md5sum
+-
+-include $(shell rospack find mk)/download_unpack_build.mk
+-
+ installed: wiped $(SOURCE_DIR)/unpacked
+-	echo "Building FLANN..."
+-	cd $(SOURCE_DIR) && cmake -DCMAKE_INSTALL_PREFIX=`pwd`/../.. -DBUILD_C_BINDINGS=true -DBUILD_PYTHON_BINDINGS=false -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_MATLAB_BINDINGS=false && make install
+-#	if [ `uname` = Darwin ]; then \
+-#		install_name_tool -id `rospack find flann`/lib/libflann_cpp.${VER}.dylib lib/libflann_cpp.${VER}.dylib; \
+-#		install_name_tool -id `rospack find flann`/lib/libflann.${VER}.dylib lib/libflann.${VER}.dylib; \
+-#	fi
+-	-ln -s lib64 lib
++	echo "Using system FLANN..."
+ 	touch installed
+ 
+ clean: wipe
+ 
+-wiped: Makefile
+-	make wipe
++wiped:
+ 	touch wiped
+ 
+ wipe:
+-	rm -rf build installed bin doc include lib lib64 share
++	rm -rf installed
+ 
+diff --git a/flann/manifest.xml b/flann/manifest.xml
+index 49a442a..f17106a 100644
+--- a/flann/manifest.xml
++++ b/flann/manifest.xml
+@@ -18,7 +18,7 @@
+   <url>http://www.cs.ubc.ca/~mariusm/index.php/FLANN/FLANN</url>
+ 
+   <export>
+-     <cpp cflags="-I${prefix}/include" lflags="-Wl,-rpath,${prefix}/lib64 -Wl,-rpath,${prefix}/lib -L${prefix}/lib64 -L${prefix}/lib -lflann -lflann_cpp -lhdf5_cpp -lhdf5" />
++     <cpp cflags="`pkg-config --cflags flann`" lflags="`pkg-config --libs flann`" />
+      <!--python path="${prefix}/flann-1.2-src/build/python" /-->
+     <doxymaker external="http://www.cs.ubc.ca/~mariusm/uploads/FLANN/manual.pdf" />
+   </export>
+diff --git a/pcl/Makefile b/pcl/Makefile
+index 8709633..0d92352 100644
+--- a/pcl/Makefile
++++ b/pcl/Makefile
+@@ -23,10 +23,6 @@ installed: $(SOURCE_DIR)/unpacked
+ 	cmake -DCMAKE_INSTALL_PREFIX=`pwd`/../../.. \
+ 				-DCMAKE_BUILD_TYPE=Release \
+ 				-DUSE_ROS=ON \
+-          -DFLANN_INCLUDE_DIR=`rospack find flann`/include \
+-          -DFLANN_LIBRARY=`rospack find flann`/lib/libflann.so \
+-          -DCMINPACK_INCLUDE_DIR=`rospack find cminpack`/include \
+-          -DCMINPACK_LIBRARY=`rospack find cminpack`/lib/libcminpack.so \
+ 	-DBUILD_TESTS=OFF \
+ 	-DBUILD_OPENNI=ON \
+ 	-DBUILD_apps=OFF \
+diff --git a/pcl/manifest.xml b/pcl/manifest.xml
+index 9fd2685..127f1f2 100644
+--- a/pcl/manifest.xml
++++ b/pcl/manifest.xml
+@@ -21,7 +21,6 @@
+   <depend package="sensor_msgs" />
+ 
+   <!-- Extra libraries -->
+-  <depend package="eigen" />
+   <depend package="cminpack" />
+   <depend package="flann" />
+ 
+@@ -31,7 +30,7 @@
+   <rosdep name="cmake"/>
+   
+   <export>
+-    <cpp cflags="-I${prefix}/include/pcl-1.1/ -I`cmake -P ${prefix}/vtk_include.cmake`" lflags="-L`cmake -P ${prefix}/vtk_library.cmake` -Wl,-rpath,${prefix}/lib64 -L${prefix}/lib64 -Wl,-rpath,${prefix}/lib -L${prefix}/lib -lpcl_common -lpcl_filters -lpcl_features -lpcl_io -lpcl_surface -lpcl_registration -lpcl_sample_consensus -lpcl_kdtree -lpcl_segmentation -lpcl_keypoints -lpcl_range_image -lpcl_range_image_border_extractor -lpcl_visualization -lpcl_octree" />
++    <cpp cflags="-I${prefix}/include/pcl-1.1/ -I`cmake -P ${prefix}/vtk_include.cmake` -I/usr/include/eigen3" lflags="-L`cmake -P ${prefix}/vtk_library.cmake` -Wl,-rpath,${prefix}/lib64 -L${prefix}/lib64 -Wl,-rpath,${prefix}/lib -L${prefix}/lib -lpcl_common -lpcl_filters -lpcl_features -lpcl_io -lpcl_surface -lpcl_registration -lpcl_sample_consensus -lpcl_kdtree -lpcl_segmentation -lpcl_keypoints -lpcl_range_image -lpcl_range_image_border_extractor -lpcl_visualization -lpcl_octree" />
+     <rosdoc external="http://docs.pointclouds.org/1.1.0/"/>
+   </export>
+   <platform os="ubuntu" version="9.04"/>
+diff --git a/pcl_ros/manifest.xml b/pcl_ros/manifest.xml
+index f58915e..b94eaa8 100644
+--- a/pcl_ros/manifest.xml
++++ b/pcl_ros/manifest.xml
+@@ -17,7 +17,6 @@
+   <url>http://ros.org/wiki/pcl_ros</url>
+   <review status="doc reviewed" notes=""/>
+ 
+-  <depend package="eigen" />
+ 
+   <!-- ROS dependencies -->
+   <depend package="roscpp" />
+-- 
+1.7.3.4
+
