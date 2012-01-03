@@ -1,0 +1,335 @@
+From 48e1c8f946bba259d6a7da528990e18f8caf9991 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 22 Dec 2011 11:27:21 -0500
+Subject: [PATCH] laser_pipeline:  use system eigen3
+
+backported from trunk
+---
+ laser_assembler/CMakeLists.txt        |    5 ++
+ laser_assembler/cmake/FindEigen.cmake |   83 +++++++++++++++++++++++++++++++++
+ laser_filters/CMakeLists.txt          |    5 ++
+ laser_filters/cmake/FindEigen.cmake   |   83 +++++++++++++++++++++++++++++++++
+ laser_geometry/CMakeLists.txt         |    4 ++
+ laser_geometry/cmake/FindEigen.cmake  |   83 +++++++++++++++++++++++++++++++++
+ 6 files changed, 263 insertions(+), 0 deletions(-)
+ create mode 100644 laser_assembler/cmake/FindEigen.cmake
+ create mode 100644 laser_filters/cmake/FindEigen.cmake
+ create mode 100644 laser_geometry/cmake/FindEigen.cmake
+
+diff --git a/laser_assembler/CMakeLists.txt b/laser_assembler/CMakeLists.txt
+index cf6e5cb..e3bacf4 100644
+--- a/laser_assembler/CMakeLists.txt
++++ b/laser_assembler/CMakeLists.txt
+@@ -1,6 +1,11 @@
+ cmake_minimum_required(VERSION 2.4.6)
+ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+ rosbuild_init()
++
++list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
++find_package(Eigen REQUIRED)
++include_directories(${EIGEN_INCLUDE_DIRS})
++
+ rosbuild_gensrv()
+ 
+ rosbuild_add_boost_directories()
+diff --git a/laser_assembler/cmake/FindEigen.cmake b/laser_assembler/cmake/FindEigen.cmake
+new file mode 100644
+index 0000000..e785d28
+--- /dev/null
++++ b/laser_assembler/cmake/FindEigen.cmake
+@@ -0,0 +1,83 @@
++# - Try to find Eigen3 lib
++#
++# This module supports requiring a minimum version, e.g. you can do
++#   find_package(Eigen3 3.1.2)
++# to require version 3.1.2 or newer of Eigen3.
++#
++# Once done this will define
++#
++#  EIGEN_FOUND - system has eigen lib with correct version
++#  EIGEN_INCLUDE_DIR - the eigen include directory
++#  EIGEN_VERSION - eigen version
++
++# Copyright (c) 2006, 2007 Montel Laurent, <montel@kde.org>
++# Copyright (c) 2008, 2009 Gael Guennebaud, <g.gael@free.fr>
++# Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
++# Redistribution and use is allowed according to the terms of the 2-clause BSD license.
++
++if(NOT Eigen_FIND_VERSION)
++  if(NOT Eigen_FIND_VERSION_MAJOR)
++    set(Eigen_FIND_VERSION_MAJOR 2)
++  endif(NOT Eigen_FIND_VERSION_MAJOR)
++  if(NOT Eigen_FIND_VERSION_MINOR)
++    set(Eigen_FIND_VERSION_MINOR 91)
++  endif(NOT Eigen_FIND_VERSION_MINOR)
++  if(NOT Eigen_FIND_VERSION_PATCH)
++    set(Eigen_FIND_VERSION_PATCH 0)
++  endif(NOT Eigen_FIND_VERSION_PATCH)
++
++  set(Eigen_FIND_VERSION "${Eigen_FIND_VERSION_MAJOR}.${Eigen_FIND_VERSION_MINOR}.${Eigen_FIND_VERSION_PATCH}")
++endif(NOT Eigen_FIND_VERSION)
++
++macro(_eigen3_check_version)
++  file(READ "${EIGEN_INCLUDE_DIR}/Eigen/src/Core/util/Macros.h" _eigen3_version_header)
++
++  string(REGEX MATCH "define[ \t]+EIGEN_WORLD_VERSION[ \t]+([0-9]+)" _eigen3_world_version_match "${_eigen3_version_header}")
++  set(EIGEN_WORLD_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MAJOR_VERSION[ \t]+([0-9]+)" _eigen3_major_version_match "${_eigen3_version_header}")
++  set(EIGEN_MAJOR_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MINOR_VERSION[ \t]+([0-9]+)" _eigen3_minor_version_match "${_eigen3_version_header}")
++  set(EIGEN_MINOR_VERSION "${CMAKE_MATCH_1}")
++
++  set(EIGEN_VERSION ${EIGEN_WORLD_VERSION}.${EIGEN_MAJOR_VERSION}.${EIGEN_MINOR_VERSION})
++  if(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK FALSE)
++  else(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK TRUE)
++  endif(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++
++  if(NOT EIGEN_VERSION_OK)
++
++    message(STATUS "Eigen version ${EIGEN_VERSION} found in ${EIGEN_INCLUDE_DIR}, "
++                   "but at least version ${Eigen_FIND_VERSION} is required")
++  endif(NOT EIGEN_VERSION_OK)
++endmacro(_eigen3_check_version)
++
++if (EIGEN_INCLUDE_DIRS)
++
++  # in cache already
++  _eigen3_check_version()
++  set(EIGEN_FOUND ${EIGEN_VERSION_OK})
++
++else ()
++
++  find_path(EIGEN_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
++      PATHS
++      ${CMAKE_INSTALL_PREFIX}/include
++      ${KDE4_INCLUDE_DIR}
++      PATH_SUFFIXES eigen3 eigen
++    )
++
++  if(EIGEN_INCLUDE_DIR)
++    _eigen3_check_version()
++  endif(EIGEN_INCLUDE_DIR)
++
++  include(FindPackageHandleStandardArgs)
++  find_package_handle_standard_args(Eigen DEFAULT_MSG EIGEN_INCLUDE_DIR EIGEN_VERSION_OK)
++
++  mark_as_advanced(EIGEN_INCLUDE_DIR)
++  SET(EIGEN_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR} CACHE PATH "The Eigen include path.")
++
++endif()
++
++
+diff --git a/laser_filters/CMakeLists.txt b/laser_filters/CMakeLists.txt
+index bdd26d8..d573d6e 100644
+--- a/laser_filters/CMakeLists.txt
++++ b/laser_filters/CMakeLists.txt
+@@ -2,6 +2,11 @@ cmake_minimum_required(VERSION 2.4.6)
+ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+ set(ROS_BUILD_TYPE Debug)
+ rosbuild_init()
++
++list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
++find_package(Eigen REQUIRED)
++include_directories(${EIGEN_INCLUDE_DIRS})
++
+ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
+ 
+ rosbuild_add_boost_directories()
+diff --git a/laser_filters/cmake/FindEigen.cmake b/laser_filters/cmake/FindEigen.cmake
+new file mode 100644
+index 0000000..e785d28
+--- /dev/null
++++ b/laser_filters/cmake/FindEigen.cmake
+@@ -0,0 +1,83 @@
++# - Try to find Eigen3 lib
++#
++# This module supports requiring a minimum version, e.g. you can do
++#   find_package(Eigen3 3.1.2)
++# to require version 3.1.2 or newer of Eigen3.
++#
++# Once done this will define
++#
++#  EIGEN_FOUND - system has eigen lib with correct version
++#  EIGEN_INCLUDE_DIR - the eigen include directory
++#  EIGEN_VERSION - eigen version
++
++# Copyright (c) 2006, 2007 Montel Laurent, <montel@kde.org>
++# Copyright (c) 2008, 2009 Gael Guennebaud, <g.gael@free.fr>
++# Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
++# Redistribution and use is allowed according to the terms of the 2-clause BSD license.
++
++if(NOT Eigen_FIND_VERSION)
++  if(NOT Eigen_FIND_VERSION_MAJOR)
++    set(Eigen_FIND_VERSION_MAJOR 2)
++  endif(NOT Eigen_FIND_VERSION_MAJOR)
++  if(NOT Eigen_FIND_VERSION_MINOR)
++    set(Eigen_FIND_VERSION_MINOR 91)
++  endif(NOT Eigen_FIND_VERSION_MINOR)
++  if(NOT Eigen_FIND_VERSION_PATCH)
++    set(Eigen_FIND_VERSION_PATCH 0)
++  endif(NOT Eigen_FIND_VERSION_PATCH)
++
++  set(Eigen_FIND_VERSION "${Eigen_FIND_VERSION_MAJOR}.${Eigen_FIND_VERSION_MINOR}.${Eigen_FIND_VERSION_PATCH}")
++endif(NOT Eigen_FIND_VERSION)
++
++macro(_eigen3_check_version)
++  file(READ "${EIGEN_INCLUDE_DIR}/Eigen/src/Core/util/Macros.h" _eigen3_version_header)
++
++  string(REGEX MATCH "define[ \t]+EIGEN_WORLD_VERSION[ \t]+([0-9]+)" _eigen3_world_version_match "${_eigen3_version_header}")
++  set(EIGEN_WORLD_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MAJOR_VERSION[ \t]+([0-9]+)" _eigen3_major_version_match "${_eigen3_version_header}")
++  set(EIGEN_MAJOR_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MINOR_VERSION[ \t]+([0-9]+)" _eigen3_minor_version_match "${_eigen3_version_header}")
++  set(EIGEN_MINOR_VERSION "${CMAKE_MATCH_1}")
++
++  set(EIGEN_VERSION ${EIGEN_WORLD_VERSION}.${EIGEN_MAJOR_VERSION}.${EIGEN_MINOR_VERSION})
++  if(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK FALSE)
++  else(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK TRUE)
++  endif(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++
++  if(NOT EIGEN_VERSION_OK)
++
++    message(STATUS "Eigen version ${EIGEN_VERSION} found in ${EIGEN_INCLUDE_DIR}, "
++                   "but at least version ${Eigen_FIND_VERSION} is required")
++  endif(NOT EIGEN_VERSION_OK)
++endmacro(_eigen3_check_version)
++
++if (EIGEN_INCLUDE_DIRS)
++
++  # in cache already
++  _eigen3_check_version()
++  set(EIGEN_FOUND ${EIGEN_VERSION_OK})
++
++else ()
++
++  find_path(EIGEN_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
++      PATHS
++      ${CMAKE_INSTALL_PREFIX}/include
++      ${KDE4_INCLUDE_DIR}
++      PATH_SUFFIXES eigen3 eigen
++    )
++
++  if(EIGEN_INCLUDE_DIR)
++    _eigen3_check_version()
++  endif(EIGEN_INCLUDE_DIR)
++
++  include(FindPackageHandleStandardArgs)
++  find_package_handle_standard_args(Eigen DEFAULT_MSG EIGEN_INCLUDE_DIR EIGEN_VERSION_OK)
++
++  mark_as_advanced(EIGEN_INCLUDE_DIR)
++  SET(EIGEN_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR} CACHE PATH "The Eigen include path.")
++
++endif()
++
++
+diff --git a/laser_geometry/CMakeLists.txt b/laser_geometry/CMakeLists.txt
+index 8cd44b7..6d2a757 100644
+--- a/laser_geometry/CMakeLists.txt
++++ b/laser_geometry/CMakeLists.txt
+@@ -3,6 +3,10 @@ include($ENV{ROS_ROOT}/core/rosbuild/rosbuild.cmake)
+ set(ROS_BUILD_TYPE Debug)
+ rosbuild_init()
+ 
++list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
++find_package(Eigen REQUIRED)
++include_directories(${EIGEN_INCLUDE_DIRS})
++
+ rosbuild_add_boost_directories()
+ 
+ rosbuild_add_library(laser_geometry src/laser_geometry.cpp )
+diff --git a/laser_geometry/cmake/FindEigen.cmake b/laser_geometry/cmake/FindEigen.cmake
+new file mode 100644
+index 0000000..e785d28
+--- /dev/null
++++ b/laser_geometry/cmake/FindEigen.cmake
+@@ -0,0 +1,83 @@
++# - Try to find Eigen3 lib
++#
++# This module supports requiring a minimum version, e.g. you can do
++#   find_package(Eigen3 3.1.2)
++# to require version 3.1.2 or newer of Eigen3.
++#
++# Once done this will define
++#
++#  EIGEN_FOUND - system has eigen lib with correct version
++#  EIGEN_INCLUDE_DIR - the eigen include directory
++#  EIGEN_VERSION - eigen version
++
++# Copyright (c) 2006, 2007 Montel Laurent, <montel@kde.org>
++# Copyright (c) 2008, 2009 Gael Guennebaud, <g.gael@free.fr>
++# Copyright (c) 2009 Benoit Jacob <jacob.benoit.1@gmail.com>
++# Redistribution and use is allowed according to the terms of the 2-clause BSD license.
++
++if(NOT Eigen_FIND_VERSION)
++  if(NOT Eigen_FIND_VERSION_MAJOR)
++    set(Eigen_FIND_VERSION_MAJOR 2)
++  endif(NOT Eigen_FIND_VERSION_MAJOR)
++  if(NOT Eigen_FIND_VERSION_MINOR)
++    set(Eigen_FIND_VERSION_MINOR 91)
++  endif(NOT Eigen_FIND_VERSION_MINOR)
++  if(NOT Eigen_FIND_VERSION_PATCH)
++    set(Eigen_FIND_VERSION_PATCH 0)
++  endif(NOT Eigen_FIND_VERSION_PATCH)
++
++  set(Eigen_FIND_VERSION "${Eigen_FIND_VERSION_MAJOR}.${Eigen_FIND_VERSION_MINOR}.${Eigen_FIND_VERSION_PATCH}")
++endif(NOT Eigen_FIND_VERSION)
++
++macro(_eigen3_check_version)
++  file(READ "${EIGEN_INCLUDE_DIR}/Eigen/src/Core/util/Macros.h" _eigen3_version_header)
++
++  string(REGEX MATCH "define[ \t]+EIGEN_WORLD_VERSION[ \t]+([0-9]+)" _eigen3_world_version_match "${_eigen3_version_header}")
++  set(EIGEN_WORLD_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MAJOR_VERSION[ \t]+([0-9]+)" _eigen3_major_version_match "${_eigen3_version_header}")
++  set(EIGEN_MAJOR_VERSION "${CMAKE_MATCH_1}")
++  string(REGEX MATCH "define[ \t]+EIGEN_MINOR_VERSION[ \t]+([0-9]+)" _eigen3_minor_version_match "${_eigen3_version_header}")
++  set(EIGEN_MINOR_VERSION "${CMAKE_MATCH_1}")
++
++  set(EIGEN_VERSION ${EIGEN_WORLD_VERSION}.${EIGEN_MAJOR_VERSION}.${EIGEN_MINOR_VERSION})
++  if(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK FALSE)
++  else(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++    set(EIGEN_VERSION_OK TRUE)
++  endif(${EIGEN_VERSION} VERSION_LESS ${Eigen_FIND_VERSION})
++
++  if(NOT EIGEN_VERSION_OK)
++
++    message(STATUS "Eigen version ${EIGEN_VERSION} found in ${EIGEN_INCLUDE_DIR}, "
++                   "but at least version ${Eigen_FIND_VERSION} is required")
++  endif(NOT EIGEN_VERSION_OK)
++endmacro(_eigen3_check_version)
++
++if (EIGEN_INCLUDE_DIRS)
++
++  # in cache already
++  _eigen3_check_version()
++  set(EIGEN_FOUND ${EIGEN_VERSION_OK})
++
++else ()
++
++  find_path(EIGEN_INCLUDE_DIR NAMES signature_of_eigen3_matrix_library
++      PATHS
++      ${CMAKE_INSTALL_PREFIX}/include
++      ${KDE4_INCLUDE_DIR}
++      PATH_SUFFIXES eigen3 eigen
++    )
++
++  if(EIGEN_INCLUDE_DIR)
++    _eigen3_check_version()
++  endif(EIGEN_INCLUDE_DIR)
++
++  include(FindPackageHandleStandardArgs)
++  find_package_handle_standard_args(Eigen DEFAULT_MSG EIGEN_INCLUDE_DIR EIGEN_VERSION_OK)
++
++  mark_as_advanced(EIGEN_INCLUDE_DIR)
++  SET(EIGEN_INCLUDE_DIRS ${EIGEN_INCLUDE_DIR} CACHE PATH "The Eigen include path.")
++
++endif()
++
++
+-- 
+1.7.3.4
+
