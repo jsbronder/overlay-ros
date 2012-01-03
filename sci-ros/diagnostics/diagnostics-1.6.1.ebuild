@@ -17,9 +17,3 @@ DEPEND="sci-ros/common_msgs:${SLOT}
 	sci-ros/pluginlib:${SLOT}
 	|| ( dev-util/gtest dev-cpp/gtest )"
 RDEPEND="${DEPEND}"
-
-src_prepare() {
-	echo 'add_definitions(-DTIXML_USE_STL)' \
-		>> "${S}"/${PN}/diagnostic_aggregator/CMakeLists.txt \
-		|| die
-}
