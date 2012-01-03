@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,7 +11,8 @@ HOMEPAGE="http://www.ros.org/wiki/pr2_common"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
-DEPEND="sci-ros/robot_model:${SLOT}"
+DEPEND="sci-ros/robot_model:${SLOT}
+	sci-ros/xacro:${SLOT}"
 RDEPEND="${DEPEND}"
