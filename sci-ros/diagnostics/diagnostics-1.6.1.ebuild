@@ -13,7 +13,8 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="electric"
 
-DEPEND="sci-ros/pluginlib:${SLOT}
+DEPEND="sci-ros/common_msgs:${SLOT}
+	sci-ros/pluginlib:${SLOT}
 	|| ( dev-util/gtest dev-cpp/gtest )"
 RDEPEND="${DEPEND}"
 
