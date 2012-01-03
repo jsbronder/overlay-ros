@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -12,10 +12,10 @@ HOMEPAGE="http://www.ros.org/wiki/visualization_common"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
-# rosdep:  x11-libs/libXrandr
-DEPEND="sci-ros/common_msgs:${SLOT}
+DEPEND="sci-ros/ros_comm:${SLOT}
+	sci-ros/rx:${SLOT}
 	x11-libs/libXaw
 	media-libs/freeimage
 	x11-libs/wxGTK:2.8
@@ -26,4 +26,8 @@ src_prepare() {
 	local plugin_def="'-DOGRE_PLUGIN_PATH=\"${ROOT}${ROS_DIST_ROOT}/${ROS_DESTDIR}/ogre/ogre/lib/OGRE\"'"
 	sed -i "s|^add_definitions(\(.*\))|add_definitions(\1 ${plugin_def})|" \
 		${PN}/ogre_tools/CMakeLists.txt|| die
+
+	sed -i  '/package="common_rosdeps"/d' ${PN}/*/manifest.xml
+
+	# TODO: Ogre needs a lot of rpath fixes.
 }
