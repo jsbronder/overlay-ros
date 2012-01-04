@@ -1,0 +1,28 @@
+From 18b8181c03ded57559bb841d936a06812d22de60 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Wed, 4 Jan 2012 14:00:32 -0500
+Subject: [PATCH] colladadom:  set ROS install rpath
+
+As ROS typically installs to libraries to a non standard path, we need
+the rpath to be set in order to find minizip.
+---
+ colladadom/Makefile |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/robot_model/colladadom/Makefile b/robot_model/colladadom/Makefile
+index cd8659b..d4c3ccf 100644
+--- a/robot_model/colladadom/Makefile
++++ b/robot_model/colladadom/Makefile
+@@ -31,6 +31,9 @@ installed: wiped $(SOURCE_DIR)/unpacked
+ 	for p in $(GENTOO_PATCHES); do \
+ 		patch -p1 -d $(SOURCE_DIR) < $$p; \
+ 	done
++	if [ "$(OS)" == "linux" ]; then \
++		sed -i 's|\(-lminizip.*\)$$|\1 -Wl,--rpath=$(ROOT)/lib|' $(SOURCE_DIR)/dom/make/dom.mk; \
++	fi
+ 	cd $(SOURCE_DIR)/dom && make $(ROS_PARALLEL_JOBS)
+ 	cp -rf $(SOURCE_DIR)/dom/include/* $(ROOT)/include/
+ 	cp -rf $(SOURCE_DIR)/dom/build/$(OS)-1.5/*.* $(ROOT)/lib/
+-- 
+1.7.3.4
+

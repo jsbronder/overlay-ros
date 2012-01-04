@@ -31,6 +31,9 @@ src_prepare() {
 	ros_add_pkg_patches colladadom \
 		gentoo-colladadom-respect-user-flags.patch
 
+	# Set rpath so libminizip is found
+	epatch "${FILESDIR}"/colladadom-set-ROS-install-rpath.patch
+
 	# as-needed fix
 	sed -i '/ROS_LINK_FLAGS/d' "${ROS_S}"/ivcon/CMakeLists.txt || die
 	echo 'target_link_libraries(bin/ivcon -lm)' >> "${ROS_S}"/ivcon/CMakeLists.txt || die
