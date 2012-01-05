@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,7 +11,7 @@ HOMEPAGE="http://www.ros.org/wiki/slam_gmapping"
 LICENSE="CCPL-Attribution-ShareAlike-NonCommercial-2.5"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
 DEPEND="sci-ros/navigation:${SLOT}"
 RDEPEND="${DEPEND}"
@@ -19,5 +19,5 @@ RDEPEND="${DEPEND}"
 src_prepare() {
 	epatch "${FILESDIR}"/gmapping-add-gentoo-patches.patch
 	ros_add_pkg_patches gmapping \
-		gentoo-gmapping_export-fix-compile.patch
+		gentoo-gmapping_export-append-libs-to-LIBS-not-LDFLAGS.patch
 }

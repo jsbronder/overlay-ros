@@ -1,0 +1,43 @@
+From d83a749ec5304657e2c9cc0942ae649297382d86 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 5 Jan 2012 12:14:23 -0500
+Subject: [PATCH] gmapping_export:  append libs to LIBS not LDFLAGS
+
+---
+ gui/Makefile         |    4 ++--
+ scanmatcher/Makefile |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/gui/Makefile b/gui/Makefile
+index f262bbe..c936f12 100644
+--- a/gui/Makefile
++++ b/gui/Makefile
+@@ -3,10 +3,10 @@
+ OBJS= gsp_thread.o qparticleviewer.o qgraphpainter.o qmappainter.o 
+ 
+ APPS= gfs_nogui gfs_simplegui gfs2img
+-LDFLAGS+=  $(QT_LIB) $(KDE_LIB) -lutils -lsensor_range -llog -lgridfastslam -lpthread -lconfigfile  -lsensor_base -lscanmatcher
++LIBS +=  $(QT_LIB) $(KDE_LIB) -lutils -lsensor_range -llog -lgridfastslam -lpthread -lconfigfile  -lsensor_base -lscanmatcher
+ 
+ ifeq ($(CARMENSUPPORT),1)
+-LDFLAGS+= -lcarmenwrapper 
++LIBS += -lcarmenwrapper 
+ endif
+ 
+ CPPFLAGS+= -I../sensor $(QT_INCLUDE) $(KDE_INCLUDE) -I$(CARMEN_HOME)/include
+diff --git a/scanmatcher/Makefile b/scanmatcher/Makefile
+index cfae7d4..4505a34 100644
+--- a/scanmatcher/Makefile
++++ b/scanmatcher/Makefile
+@@ -2,7 +2,7 @@ OBJS= smmap.o scanmatcher.o scanmatcherprocessor.o eig3.o
+ APPS= scanmatch_test icptest
+ 
+ #LDFLAGS+= $(GSL_LIB) -lutils -lsensor_range -llog
+-LDFLAGS+= -lsensor_range -lsensor_base -lsensor_odometry -llog -lsensor_odometry -lutils
++LIBS += -lsensor_range -lsensor_base -lsensor_odometry -llog -lsensor_odometry -lutils
+ #CPPFLAGS+=-I../sensor $(GSL_INCLUDE)
+ CPPFLAGS+=-I../sensor
+ 
+-- 
+1.7.3.4
+
