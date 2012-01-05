@@ -18,7 +18,6 @@ DEPEND="sci-ros/common:${SLOT}
 	sci-ros/driver_common:${SLOT}
 	sci-ros/visualization_common:${SLOT}
 	sci-ros/perception_pcl:${SLOT}
-	media-libs/netpbm
 	media-libs/sdl-image"
 RDEPEND="${DEPEND}"
 
