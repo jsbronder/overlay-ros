@@ -15,5 +15,5 @@ IUSE=""
 SLOT="electric"
 
 DEPEND="sci-ros/ros_comm:${SLOT}
-	x11-libs/wxGTK:2.8[X]"
+	dev-python/wxpython:2.8"
 RDEPEND="${DEPEND}"
