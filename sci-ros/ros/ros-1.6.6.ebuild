@@ -15,7 +15,7 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="electric"
 
-DEPEND=""
+DEPEND="dev-python/pyyaml"
 RDEPEND="${DEPEND}"
 
 pkg_setup() {
