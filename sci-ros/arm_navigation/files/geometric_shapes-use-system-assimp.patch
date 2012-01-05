@@ -1,0 +1,33 @@
+From da451a91a6dc32a472358d93377eac735a0c4671 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Thu, 5 Jan 2012 13:45:57 -0500
+Subject: [PATCH] geometric_shapes:  use system assimp
+
+---
+ arm_navigation/geometric_shapes/CMakeLists.txt |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/arm_navigation/geometric_shapes/CMakeLists.txt b/arm_navigation/geometric_shapes/CMakeLists.txt
+index c53195a..59ce15c 100644
+--- a/arm_navigation/geometric_shapes/CMakeLists.txt
++++ b/arm_navigation/geometric_shapes/CMakeLists.txt
+@@ -17,11 +17,16 @@ set(ROS_BUILD_TYPE Release)
+ #set the default path for built libraries to the "lib" directory
+ set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+ 
++include(FindPkgConfig)
++pkg_check_modules(assimp assimp REQUIRED)
++include_directories(${assimp_INCLUDE_DIRS})
++link_directories(${assimp_LIBRARY_DIRS})
+ 
+ rosbuild_add_library(${PROJECT_NAME} src/shape_operations.cpp
+ 				     src/bodies.cpp
+ 				     src/body_operations.cpp)
+ 
++target_link_libraries(${PROJECT_NAME} ${assimp_LIBRARIES})
+ 
+ # Unit tests
+ rosbuild_add_gtest(test_point_inclusion test/test_point_inclusion.cpp)
+-- 
+1.7.3.4
+
