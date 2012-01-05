@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -11,8 +11,10 @@ HOMEPAGE="http://www.ros.org/wiki/pr2_apps"
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
 IUSE=""
-SLOT="cturtle"
+SLOT="electric"
 
-DEPEND="sci-ros/joystick_drivers:${SLOT}
-	sci-ros/pr2_controllers:${SLOT}"
+DEPEND="sci-ros/arm_navigation:${SLOT}
+	sci-ros/joystick_drivers:${SLOT}
+	sci-ros/pr2_controllers:${SLOT}
+	sci-ros/pr2_common_actions:${SLOT}"
 RDEPEND="${DEPEND}"
