@@ -21,8 +21,11 @@ RDEPEND="${DEPEND}"
 src_prepare() {
 	cd "${ROS_S}" || die
 
-	sed -i '/common_rosdeps/d' laser_geometry/manifest.xml || die
-	sed -i '/package="eigen"/d' laser_geometry/manifest.xml || die
+	sed -i \
+		-e '/common_rosdeps/d' \
+		-e '/package="eigen"/d'\
+		-e 's|\(cflags="\)|\1-I/usr/include/eigen3 |' \
+		laser_geometry/manifest.xml || die
 
 	epatch "${FILESDIR}"/laser_pipeline-use-system-eigen3.patch
 }
