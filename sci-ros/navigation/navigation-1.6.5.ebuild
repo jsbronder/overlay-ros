@@ -21,3 +21,11 @@ DEPEND="sci-ros/common:${SLOT}
 	media-libs/netpbm
 	media-libs/sdl-image"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	cd "${ROS_S}" || die
+	sed -i \
+		-e '/eigen/d' \
+		-e 's|\(cflags="\)|\1-I/usr/include/eigen3|' \
+		dwa_local_planner/manifest.xml || die
+}
