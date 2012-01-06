@@ -7,8 +7,8 @@ EAPI=3
 WX_GTK_VER="2.8"
 inherit eutils wxwidgets ros
 
-DESCRIPTION="Packages for gathering, viewing, and analyzing ROS diagnostics data"
-HOMEPAGE="http://www.ros.org/wiki/diagnostics"
+DESCRIPTION="Packages that permit collision-free arm navigation"
+HOMEPAGE="http://www.ros.org/wiki/arm_navigation"
 
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
