@@ -5,8 +5,8 @@
 EAPI=3
 inherit ros
 
-DESCRIPTION="Packages for gathering, viewing, and analyzing ROS diagnostics data"
-HOMEPAGE="http://www.ros.org/wiki/diagnostics"
+DESCRIPTION="Tools for 2D robot navigation"
+HOMEPAGE="http://www.ros.org/wiki/navigation"
 
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
