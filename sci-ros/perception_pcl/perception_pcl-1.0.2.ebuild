@@ -5,8 +5,8 @@
 EAPI=3
 inherit eutils ros
 
-DESCRIPTION="Packages for gathering, viewing, and analyzing ROS diagnostics data"
-HOMEPAGE="http://www.ros.org/wiki/diagnostics"
+DESCRIPTION="ROS stack wrapping the Point Cloud Library"
+HOMEPAGE="http://www.ros.org/wiki/perception_pcl"
 
 LICENSE="BSD"
 KEYWORDS="~amd64 ~x86"
