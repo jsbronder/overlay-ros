@@ -1,4 +1,4 @@
-# Copyright 1999-2011 Gentoo Foundation
+# Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
@@ -14,14 +14,15 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="electric"
 
+# TODO:  Nothing appears to need bullet at runtime, however
+# packages using tf will look for it to be around.
 COMMON_DEPEND="sci-ros/common_msgs:${SLOT}
 	sci-ros/ros_comm:${SLOT}
 	sci-ros/orocos_kinematics_dynamics:${SLOT}
+	=sci-ros/bullet-2.76*:${SLOT}
 	dev-cpp/eigen:3"
 
-# Nothing appears to need bullet at runtime.
-DEPEND="${COMMON_DEPEND}
-	=sci-ros/bullet-2.76*:${SLOT}"
+DEPEND="${COMMON_DEPEND}"
 RDEPEND="${COMMON_DEPEND}"
 
 pkg_setup() {
