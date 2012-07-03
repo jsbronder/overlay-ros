@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI=3
-inherit ros
+inherit ros eutils
 
 DESCRIPTION="ROS communications-related packages"
 HOMEPAGE="http://www.ros.org/wiki/ros_comm"
@@ -20,3 +20,8 @@ DEPEND="sci-ros/ros:${SLOT}
 	dev-libs/log4cxx
 	dev-libs/boost"
 RDEPEND="${DEPEND}"
+
+src_prepare() {
+	cd "${S}"/"${PN}"
+	epatch "${FILESDIR}"/rosout-prefer-config-file-for-logging.patch
+}

@@ -1,0 +1,105 @@
+From 744934c59a4c73ee904e622d22b1b7adc5925116 Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 3 Jul 2012 11:54:24 -0400
+Subject: [PATCH] rosout:  prefer config file for logging
+
+---
+ tools/rosout/rosout.cpp |   68 +++++++++++++++++++++++++++++++++++++++-------
+ 1 files changed, 57 insertions(+), 11 deletions(-)
+
+diff --git a/tools/rosout/rosout.cpp b/tools/rosout/rosout.cpp
+index 3b12f4f..45582e3 100644
+--- a/tools/rosout/rosout.cpp
++++ b/tools/rosout/rosout.cpp
+@@ -46,6 +46,7 @@
+ #include "log4cxx/rollingfileappender.h"
+ #include "log4cxx/patternlayout.h"
+ #include "log4cxx/helpers/pool.h"
++#include "log4cxx/propertyconfigurator.h"
+ 
+ /**
+  * @mainpage
+@@ -74,17 +75,37 @@ public:
+ 
+   void init()
+   {
+-    //calculate log directory
+-    std::string log_file_name = ros::file_log::getLogDirectory() + "/rosout.log";
+-
+-    logger_ = log4cxx::Logger::getRootLogger();
+-    log4cxx::LayoutPtr layout = new log4cxx::PatternLayout("");
+-    log4cxx::RollingFileAppenderPtr appender = new log4cxx::RollingFileAppender(layout, log_file_name, true);
+-    logger_->addAppender( appender );
+-    appender->setMaximumFileSize(100*1024*1024);
+-    appender->setMaxBackupIndex(10);
+-    log4cxx::helpers::Pool pool;
+-    appender->activateOptions(pool);
++    // configurable rosout appender:
++
++    logger_ = log4cxx::Logger::getLogger("ros.rosout");
++
++    // assign the log path:
++    char putenv_cmd[500];
++    snprintf(putenv_cmd, 499, "ROSOUT_LOG_PATH=%s/", ros::file_log::getLogDirectory().c_str());
++    putenv(putenv_cmd);
++
++    // apply the default configuration:
++    std::string default_config_file_name = getEnv(std::string("ROS_ROOT"));
++    if (!default_config_file_name.empty())
++    {
++      default_config_file_name += "/config/rosconsole.config";
++      log4cxx::PropertyConfigurator::configure(default_config_file_name);
++    }
++
++    // override with the ROS_CONFIG_FILE, if it exists:
++    std::string config_file_name = getEnv("ROSCONSOLE_CONFIG_FILE");
++    if (!config_file_name.empty())
++    {
++      log4cxx::PropertyConfigurator::configure(config_file_name);
++    }
++
++    std::string log_file_name;
++    std::string appenderName("rosout_a");
++    log4cxx::RollingFileAppenderPtr appender = logger_->getAppender(appenderName);
++    if (appender != NULL)
++    {
++      log_file_name = appender->getFile();
++    }
+ 
+     std::cout << "logging to " << log_file_name << std::endl;
+ 
+@@ -97,6 +118,31 @@ public:
+     std::cout << "subscribed to /rosout" << std::endl;
+   }
+ 
++  std::string getEnv(const std::string & env_var)
++  {
++    // return the config file, or an empty string. 
++    std::string env_val;
++    char* env_val_cstr = NULL;
++#ifdef _MSC_VER
++    _dupenv_s(&env_val_cstr, NULL, env_var.c_str());
++
++    if ( env_val_cstr )
++    {
++      env_val = env_val_cstr;
++      free(env_val_cstr);
++    }
++#else
++    env_val_cstr = getenv(env_var.c_str());
++
++    if ( env_val_cstr )
++    {
++      env_val = env_val_cstr;
++    }
++#endif
++    return env_val;
++  }
++
++
+   void rosoutCallback(const rosgraph_msgs::Log::ConstPtr& msg)
+   {
+     agg_pub_.publish(msg);
+-- 
+1.7.3.4
+
