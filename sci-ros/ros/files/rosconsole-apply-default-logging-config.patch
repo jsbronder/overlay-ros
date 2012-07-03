@@ -1,0 +1,29 @@
+From 262f0890a0375833fd917a8152d869583e482f6d Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Tue, 3 Jul 2012 11:59:44 -0400
+Subject: [PATCH] rosconsole:  apply default logging config
+
+---
+ config/rosconsole.config |    9 +++++++++
+ 1 files changed, 9 insertions(+), 0 deletions(-)
+
+diff --git a/config/rosconsole.config b/config/rosconsole.config
+index 932597f..f110f29 100644
+--- a/config/rosconsole.config
++++ b/config/rosconsole.config
+@@ -6,3 +6,12 @@
+ #
+ log4j.logger.ros=INFO
+ log4j.logger.ros.roscpp.superdebug=WARN
++# rosout:
++log4j.logger.ros.rosout=INFO, rosout_a
++# ROSOUT_LOG_PATH is set by rosout prior to configuring:
++log4j.appender.rosout_a.File=${ROSOUT_LOG_PATH}rosout.log
++log4j.appender.rosout_a=org.apache.log4j.RollingFileAppender
++log4j.appender.rosout_a.MaxFileSize=102400KB
++log4j.appender.rosout_a.MaxBackupIndex=10
++log4j.appender.rosout_a.layout=org.apache.log4j.PatternLayout
++
+-- 
+1.7.3.4
+

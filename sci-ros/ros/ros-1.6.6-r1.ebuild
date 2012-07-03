@@ -33,6 +33,7 @@ src_prepare() {
 
 	cd "${S}"/${PN}
 	epatch "${FILESDIR}"/rospack-remove-braindead-priv-dropping.patch
+	epatch "${FILESDIR}"/rosconsole-apply-default-logging-config.patch
 }
 
 src_compile() {
