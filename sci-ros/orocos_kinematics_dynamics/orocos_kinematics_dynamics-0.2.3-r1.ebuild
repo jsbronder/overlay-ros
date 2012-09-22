@@ -28,5 +28,8 @@ pkg_setup() {
 
 src_prepare() {
 	cd "${ROS_S}" || die
+
+	# upstream 14396caaef3c2426ddeedff2d759bad424528b42
+	epatch "${FILESDIR}"/orocos_kdl-bug-973.patch
 	epatch "${FILESDIR}"/orocos-kdl-add-interpackage-rpath.patch
 }

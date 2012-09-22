@@ -1,0 +1,143 @@
+From 72bbdfff97ab458a44934e6bc645684843d7cf4a Mon Sep 17 00:00:00 2001
+From: Justin Bronder <jsbronder@gmail.com>
+Date: Fri, 21 Sep 2012 14:46:30 -0400
+Subject: [PATCH] Backport of upstream bug 973 fix
+
+From 14396caaef3c2426ddeedff2d759bad424528b42 Mon Sep 17 00:00:00 2001
+From: Erwin Aertbelien <Erwin.Aertbelien@mech.kuleuven.be>
+Date: Tue, 12 Jun 2012 14:00:16 +0200
+Subject: [PATCH] Fixed the memory alloc/dealloc problem of bug 973.
+
+There was also a restructuring of the Trajectory* files where
+I removed GetProfile and GetPath from the Trajectory* classes for
+which these are not relevant.
+
+Signed-off-by: Erwin Aertbelien <Erwin.Aertbelien@mech.kuleuven.be>
+---
+ orocos_kdl/src/trajectory.hpp            |    6 ------
+ orocos_kdl/src/trajectory_composite.cpp  |   17 +----------------
+ orocos_kdl/src/trajectory_composite.hpp  |    3 ---
+ orocos_kdl/src/trajectory_stationary.hpp |    6 +++++-
+ 4 files changed, 6 insertions(+), 26 deletions(-)
+
+diff --git a/orocos_kdl/src/trajectory.hpp b/orocos_kdl/src/trajectory.hpp
+index 714e1a1..f633a0c 100644
+--- a/orocos_kdl/src/trajectory.hpp
++++ b/orocos_kdl/src/trajectory.hpp
+@@ -78,12 +78,6 @@ namespace KDL {
+ 	class Trajectory
+ 	{
+ 	public:
+-        virtual Path*      GetPath() = 0;
+-        // The underlying Path
+-
+-        virtual VelocityProfile* GetProfile() = 0;
+-        // The velocity profile
+-
+ 		virtual double Duration() const = 0;
+ 		// The duration of the trajectory
+ 
+diff --git a/orocos_kdl/src/trajectory_composite.cpp b/orocos_kdl/src/trajectory_composite.cpp
+index aa8772f..50a9ea0 100644
+--- a/orocos_kdl/src/trajectory_composite.cpp
++++ b/orocos_kdl/src/trajectory_composite.cpp
+@@ -23,7 +23,6 @@ namespace KDL {
+ 
+     Trajectory_Composite::Trajectory_Composite():duration(0.0)
+     {
+-        path = new Path_Composite();
+     }
+ 
+     double Trajectory_Composite::Duration() const{
+@@ -72,7 +71,7 @@ namespace KDL {
+ 
+     Twist Trajectory_Composite::Acc(double time) const {
+         // not optimal, could be done in log(#elem)
+-	unsigned int i;
++	    unsigned int i;
+         Trajectory* traj;
+         double previoustime;
+         if (time < 0) {
+@@ -93,7 +92,6 @@ namespace KDL {
+         vt.insert(vt.end(),elem);
+         duration += elem->Duration();
+         vd.insert(vd.end(),duration);
+-        path->Add(elem->GetPath());
+     }
+ 
+     void Trajectory_Composite::Destroy() {
+@@ -103,8 +101,6 @@ namespace KDL {
+         }
+         vt.erase(vt.begin(),vt.end());
+         vd.erase(vd.begin(),vd.end());
+-
+-        delete path;
+     }
+ 
+     Trajectory_Composite::~Trajectory_Composite() {
+@@ -128,17 +124,6 @@ namespace KDL {
+         }
+         return comp;
+     }
+-
+-    Path* Trajectory_Composite::GetPath()
+-    {
+-        return path;
+-    }
+-
+-    VelocityProfile* Trajectory_Composite::GetProfile()
+-    {
+-        return 0;
+-    }
+-
+ }
+ 
+ 
+diff --git a/orocos_kdl/src/trajectory_composite.hpp b/orocos_kdl/src/trajectory_composite.hpp
+index ac8c27d..a110e39 100644
+--- a/orocos_kdl/src/trajectory_composite.hpp
++++ b/orocos_kdl/src/trajectory_composite.hpp
+@@ -37,7 +37,6 @@ class Trajectory_Composite: public Trajectory
+ 		VectorDouble  vd;      // contains end time for each Trajectory
+ 		double duration;    // total duration of the composed
+ 				    // Trajectory
+-		Path_Composite* path;
+ 
+ 	public:
+ 		Trajectory_Composite();
+@@ -54,8 +53,6 @@ class Trajectory_Composite: public Trajectory
+ 		virtual void Destroy();
+ 		virtual void Write(std::ostream& os) const;
+ 		virtual Trajectory* Clone() const;
+-		virtual Path*      GetPath();
+-		virtual VelocityProfile* GetProfile();
+ 
+ 		virtual ~Trajectory_Composite();
+ 	};
+diff --git a/orocos_kdl/src/trajectory_stationary.hpp b/orocos_kdl/src/trajectory_stationary.hpp
+index 27d7b17..a86369c 100644
+--- a/orocos_kdl/src/trajectory_stationary.hpp
++++ b/orocos_kdl/src/trajectory_stationary.hpp
+@@ -32,7 +32,7 @@ namespace KDL {
+ 	public:
+ 		Trajectory_Stationary(double _duration,const Frame& _pos):
+ 		  pos(_pos),duration(_duration) {}
+-		virtual double Duration() {
++		virtual double Duration() const {
+ 			return duration;
+ 		}
+ 		virtual Frame Pos(double time) const {
+@@ -45,6 +45,10 @@ namespace KDL {
+ 			return Twist::Zero();
+ 		}
+ 		virtual void Write(std::ostream& os) const;
++
++        virtual Trajectory* Clone() const {
++            return new Trajectory_Stationary(duration,pos);
++        }
+ 		virtual ~Trajectory_Stationary() {}
+ 	};
+ 
+-- 
+1.7.3.4
+
