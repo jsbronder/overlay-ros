@@ -14,10 +14,10 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 SLOT="electric"
 
-COMMON_DEPEND="sci-ros/ros:${SLOT}"
-DEPEND="${COMMON_DEPEND}
-	dev-util/cppunit
+COMMON_DEPEND="sci-ros/ros:${SLOT}
 	dev-python/sip"
+DEPEND="${COMMON_DEPEND}
+	dev-util/cppunit"
 RDEPEND="${COMMON_DEPEND}"
 
 pkg_setup() {
