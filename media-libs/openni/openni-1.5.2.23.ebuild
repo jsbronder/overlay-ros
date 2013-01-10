@@ -16,7 +16,7 @@ IUSE="doc"
 SLOT="0"
 
 CDEPEND="virtual/libusb:1
-	dev-libs/tinyxml
+	dev-libs/tinyxml[stl]
 	media-libs/freeglut
 	virtual/jpeg"
 
@@ -30,6 +30,10 @@ src_prepare() {
 	sed -i \
 		"s,^\(\tjavac \),\1$(java-pkg_javac-args) ," \
 		"${S}"/Platform/Linux/Build/Common/CommonJavaMakefile || die
+
+	sed -i \
+		's,\(CFLAGS += -O.*\),\1 -DTIXML_USE_STL,' \
+		"${S}"/Platform/Linux/Build/Common/CommonCppMakefile || die
 
 	# Taken from https://github.com/jspricke/debian-openni
 	epatch "${FILESDIR}"/0002-Add-SONAME-to-libraries.patch
